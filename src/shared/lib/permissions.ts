@@ -13,6 +13,9 @@
 
 export const PERM = {
   // ---------- Core ----------
+  uiReference: {
+    read: 'ui-reference:read',
+  },
   roles: {
     read: 'roles:read',
     create: 'roles:create',

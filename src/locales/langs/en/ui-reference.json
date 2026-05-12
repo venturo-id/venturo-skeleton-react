@@ -1,0 +1,20 @@
+{
+  "title": "UI Reference",
+  "description": "Catalog of reusable UI components",
+  "circleCheckbox": {
+    "title": "Circle Checkbox",
+    "description": "Task completion toggle with priority color variants"
+  },
+  "taskCard": {
+    "title": "Task Card",
+    "description": "Task card shown inside a board column. Supports priority, labels, due date, and subtask progress."
+  },
+  "addTask": {
+    "title": "Add Task",
+    "description": "New task creation form with inline form and modal dialog"
+  },
+  "taskDetailModal": {
+    "title": "Task Detail Modal",
+    "description": "Task detail modal with description editor, comments, and subtasks"
+  }
+}

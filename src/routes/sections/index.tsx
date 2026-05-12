@@ -3,6 +3,7 @@ import type { RouteObject } from 'react-router';
 import { lazy } from 'react';
 
 import { authRoutes } from './auth';
+import { timeboxRoutes } from './timebox';
 import { dashboardRoutes } from './dashboard';
 
 // ----------------------------------------------------------------------
@@ -15,6 +16,9 @@ export const routesSection: RouteObject[] = [
 
   // Dashboard (mounted at '/')
   ...dashboardRoutes,
+
+  // Timebox (mounted at '/timebox')
+  ...timeboxRoutes,
 
   // No match
   { path: '*', element: <Page404 /> },

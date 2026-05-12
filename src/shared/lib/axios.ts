@@ -156,4 +156,34 @@ export const endpoints = {
       public: '/core/v1/translation-overrides',
     },
   },
+  timebox: {
+    projects: {
+      list: '/timebox/v1/projects',
+      byId: (id: string) => `/timebox/v1/projects/${id}`,
+      sections: (projectId: string) => `/timebox/v1/projects/${projectId}/sections`,
+      tasks: (projectId: string) => `/timebox/v1/projects/${projectId}/tasks`,
+      taskById: (projectId: string, taskId: string) => `/timebox/v1/projects/${projectId}/tasks/${taskId}`,
+    },
+    sections: {
+      byId: (projectId: string, sectionId: string) => `/timebox/v1/projects/${projectId}/sections/${sectionId}`,
+    },
+    tasks: {
+      complete: (projectId: string, taskId: string) => `/timebox/v1/projects/${projectId}/tasks/${taskId}/complete`,
+      uncomplete: (projectId: string, taskId: string) => `/timebox/v1/projects/${projectId}/tasks/${taskId}/uncomplete`,
+      comments: (projectId: string, taskId: string) => `/timebox/v1/projects/${projectId}/tasks/${taskId}/comments`,
+      commentById: (projectId: string, taskId: string, commentId: string) =>
+        `/timebox/v1/projects/${projectId}/tasks/${taskId}/comments/${commentId}`,
+      subtasks: (projectId: string, taskId: string) => `/timebox/v1/projects/${projectId}/tasks/${taskId}/subtasks`,
+      subtaskById: (projectId: string, taskId: string, subtaskId: string) =>
+        `/timebox/v1/projects/${projectId}/tasks/${taskId}/subtasks/${subtaskId}`,
+    },
+    labels: {
+      list: '/timebox/v1/labels',
+      byId: (id: string) => `/timebox/v1/labels/${id}`,
+    },
+    teams: {
+      list: '/timebox/v1/teams',
+      byId: (id: string) => `/timebox/v1/teams/${id}`,
+    },
+  },
 } as const;

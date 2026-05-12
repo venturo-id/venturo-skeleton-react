@@ -2,6 +2,9 @@ import type { RouteObject } from 'react-router';
 
 import { Outlet } from 'react-router';
 import { lazy, Suspense } from 'react';
+import { Navigate } from 'react-router';
+
+import { paths } from 'src/routes/paths';
 
 import { CONFIG } from 'src/shared/config';
 import { PERM } from 'src/shared/lib/permissions';
@@ -13,7 +16,7 @@ import { usePathname } from '../hooks';
 
 // ----------------------------------------------------------------------
 
-const HomePage = lazy(() => import('src/module/core/features/home/pages'));
+const UiReferencePage = lazy(() => import('src/module/core/features/ui-reference/pages'));
 
 const BranchesListPage = lazy(() => import('src/module/core/features/branches/pages/list'));
 const RolesListPage = lazy(() => import('src/module/core/features/roles/pages/list'));
@@ -48,7 +51,8 @@ export const dashboardRoutes: RouteObject[] = [
     path: '/',
     element: CONFIG.auth.skip ? dashboardLayout() : <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
-      { element: <HomePage />, index: true },
+      { element: <Navigate to={paths.timebox.inbox} replace />, index: true },
+      { path: 'ui-reference', element: gated(PERM.uiReference.read, <UiReferencePage />) },
       { path: 'settings/branches', element: gated(PERM.branches.read, <BranchesListPage />) },
       { path: 'settings/roles', element: gated(PERM.roles.read, <RolesListPage />) },
       {
