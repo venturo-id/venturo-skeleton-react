@@ -1,0 +1,20 @@
+{
+  "title": "Referensi UI",
+  "description": "Katalog komponen UI yang dapat digunakan kembali",
+  "circleCheckbox": {
+    "title": "Circle Checkbox",
+    "description": "Toggle penyelesaian tugas dengan varian warna prioritas"
+  },
+  "taskCard": {
+    "title": "Task Card",
+    "description": "Kartu tugas yang ditampilkan di dalam kolom papan kanban. Mendukung prioritas, label, tanggal jatuh tempo, dan progres subtugas."
+  },
+  "addTask": {
+    "title": "Add Task",
+    "description": "Formulir pembuatan tugas baru dengan inline form dan modal dialog"
+  },
+  "taskDetailModal": {
+    "title": "Task Detail Modal",
+    "description": "Modal detail tugas dengan editor deskripsi, komentar, dan subtugas"
+  }
+}
