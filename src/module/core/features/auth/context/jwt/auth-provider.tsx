@@ -202,6 +202,15 @@ export function AuthProvider({ children }: Props) {
     [applySignOut]
   );
 
+  const getSessions = useCallback(async () => {
+    const refreshToken = getRefreshToken();
+    return authApi.getSessions(refreshToken ?? undefined);
+  }, []);
+
+  const revokeSession = useCallback(async (sessionId: string) => {
+    await authApi.revokeSession(sessionId);
+  }, []);
+
   const switchCompany = useCallback(async (companyId: string) => {
     const res = await authApi.switchCompany(companyId);
     setTokens(res.access_token, res.refresh_token);
@@ -227,8 +236,10 @@ export function AuthProvider({ children }: Props) {
       signOut,
       switchCompany,
       checkUserSession,
+      getSessions,
+      revokeSession,
     }),
-    [state, signIn, signUp, signInWithGoogle, signOut, switchCompany, checkUserSession]
+    [state, signIn, signUp, signInWithGoogle, signOut, switchCompany, checkUserSession, getSessions, revokeSession]
   );
 
   return <AuthContext value={value}>{children}</AuthContext>;

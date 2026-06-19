@@ -1,0 +1,33 @@
+{
+  "title": "Security & Sessions",
+  "subtitle": "Manage devices currently active on your account.",
+  "thisDevice": "This device",
+  "lastUsed": "Last used",
+  "ipAddress": "IP address",
+  "unknown": "Unknown",
+  "logoutAllDevices": "Logout all devices",
+  "revokeAccess": "Revoke access",
+  "revokeConfirm": {
+    "title": "Revoke device access?",
+    "description": "This device will not be able to use your account until it logs in again.",
+    "confirm": "Revoke access"
+  },
+  "logoutAllConfirm": {
+    "title": "Logout from all devices?",
+    "description": "All active sessions including this device will end immediately.",
+    "confirm": "Logout all"
+  },
+  "feedback": {
+    "revoked": "Device access revoked successfully.",
+    "loggedOutAll": "Logged out from all devices successfully."
+  },
+  "errors": {
+    "loadFailed": "Failed to load session list.",
+    "revokeFailed": "Failed to revoke device access.",
+    "logoutAllFailed": "Failed to logout from all devices."
+  },
+  "empty": {
+    "title": "No active sessions",
+    "subtitle": "No devices have been recorded yet."
+  }
+}

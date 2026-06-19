@@ -108,6 +108,22 @@ export type SignUpParams = {
   company_name: string;
 };
 
+export type SessionDeviceInfo = {
+  name: string;
+  type: string;
+  os: string;
+  browser: string;
+};
+
+export type Session = {
+  id: string;
+  device_info: SessionDeviceInfo | null;
+  ip_address: string | null;
+  last_used_at: string | null;
+  created_at: string;
+  is_current: boolean;
+};
+
 export type AuthContextValue = AuthState & {
   authenticated: boolean;
   unauthenticated: boolean;
@@ -117,4 +133,6 @@ export type AuthContextValue = AuthState & {
   signOut: (options?: { allDevices?: boolean }) => Promise<void>;
   switchCompany: (companyId: string) => Promise<void>;
   checkUserSession: () => Promise<void>;
+  getSessions: () => Promise<Session[]>;
+  revokeSession: (sessionId: string) => Promise<void>;
 };

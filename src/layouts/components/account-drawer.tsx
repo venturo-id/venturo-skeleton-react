@@ -111,6 +111,11 @@ export function AccountDrawer({ compact, sx, ...other }: AccountDrawerProps) {
     router.push(path);
   };
 
+  const handleSessions = () => {
+    closeMenu();
+    router.push(paths.dashboard.account.sessions);
+  };
+
   const handleLogout = () => {
     closeMenu();
     onOpenLogoutConfirm();
@@ -246,6 +251,10 @@ export function AccountDrawer({ compact, sx, ...other }: AccountDrawerProps) {
         <MenuItem onClick={handleTheme} sx={{ gap: 1 }}>
           <Iconify icon="solar:palette-bold-duotone" />
           {t('account.theme')}
+        </MenuItem>
+        <MenuItem onClick={handleSessions} sx={{ gap: 1 }}>
+          <Iconify icon="solar:shield-keyhole-bold-duotone" />
+          {t('account.sessions')}
         </MenuItem>
 
         {settingsItems.length > 0 && <Divider sx={{ my: 0.5 }} />}

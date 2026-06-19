@@ -15,6 +15,7 @@
   "account": {
     "profile": "Profile",
     "theme": "Theme",
+    "sessions": "Security & Sessions",
     "logout": "Logout",
     "logoutConfirm": {
       "title": "Logout Confirmation",

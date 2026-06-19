@@ -129,6 +129,8 @@ export const endpoints = {
     switchCompany: '/core/v1/auth/switch-company',
     me: '/core/v1/auth/me',
     companies: '/core/v1/auth/companies',
+    sessions: '/core/v1/auth/sessions',
+    sessionById: (id: string) => `/core/v1/auth/sessions/${id}`,
   },
   core: {
     companies: {
