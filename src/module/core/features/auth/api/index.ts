@@ -1,4 +1,5 @@
 import type {
+  Session,
   TokenPair,
   MeResponse,
   ApiEnvelope,
@@ -59,4 +60,13 @@ export function getMe() {
 
 export function getMyCompanies() {
   return unwrap<CompanyMembership[]>(axios.get(endpoints.auth.companies));
+}
+
+export function getSessions(currentRefreshToken?: string) {
+  const params = currentRefreshToken ? { current_refresh_token: currentRefreshToken } : {};
+  return unwrap<Session[]>(axios.get(endpoints.auth.sessions, { params }));
+}
+
+export function revokeSession(sessionId: string) {
+  return axios.delete(endpoints.auth.sessionById(sessionId));
 }

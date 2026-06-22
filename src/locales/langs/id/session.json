@@ -1,0 +1,33 @@
+{
+  "title": "Keamanan & Sesi",
+  "subtitle": "Kelola perangkat yang sedang aktif menggunakan akun Anda.",
+  "thisDevice": "Perangkat ini",
+  "lastUsed": "Terakhir digunakan",
+  "ipAddress": "Alamat IP",
+  "unknown": "Tidak diketahui",
+  "logoutAllDevices": "Logout semua perangkat",
+  "revokeAccess": "Cabut akses",
+  "revokeConfirm": {
+    "title": "Cabut akses perangkat?",
+    "description": "Perangkat ini tidak akan bisa menggunakan akun Anda sampai login ulang.",
+    "confirm": "Cabut akses"
+  },
+  "logoutAllConfirm": {
+    "title": "Logout dari semua perangkat?",
+    "description": "Semua sesi aktif termasuk perangkat ini akan segera berakhir.",
+    "confirm": "Logout semua"
+  },
+  "feedback": {
+    "revoked": "Akses perangkat berhasil dicabut.",
+    "loggedOutAll": "Berhasil logout dari semua perangkat."
+  },
+  "errors": {
+    "loadFailed": "Gagal memuat daftar sesi.",
+    "revokeFailed": "Gagal mencabut akses perangkat.",
+    "logoutAllFailed": "Gagal logout dari semua perangkat."
+  },
+  "empty": {
+    "title": "Tidak ada sesi aktif",
+    "subtitle": "Belum ada perangkat yang tercatat."
+  }
+}

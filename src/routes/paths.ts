@@ -23,5 +23,8 @@ export const paths = {
       users: '/settings/users',
       translationOverride: '/settings/translation-override',
     },
+    account: {
+      sessions: '/account/sessions',
+    },
   },
 };

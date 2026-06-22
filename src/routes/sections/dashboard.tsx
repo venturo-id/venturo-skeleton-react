@@ -28,6 +28,8 @@ const TranslationOverridePage = lazy(
   () => import('src/module/core/features/translation-override/pages/list')
 );
 
+const SessionsPage = lazy(() => import('src/module/core/features/auth/pages/sessions'));
+
 // ----------------------------------------------------------------------
 
 function SuspenseOutlet() {
@@ -72,6 +74,7 @@ export const dashboardRoutes: RouteObject[] = [
         path: 'settings/translation-override',
         element: gated(PERM.translationOverrides.read, <TranslationOverridePage />),
       },
+      { path: 'account/sessions', element: <SessionsPage /> },
     ],
   },
 ];

@@ -15,6 +15,7 @@
   "account": {
     "profile": "Profil",
     "theme": "Tema",
+    "sessions": "Keamanan & Sesi",
     "logout": "Keluar",
     "logoutConfirm": {
       "title": "Konfirmasi Keluar",
