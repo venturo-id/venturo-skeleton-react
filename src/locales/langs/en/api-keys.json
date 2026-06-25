@@ -1,0 +1,99 @@
+{
+  "title": "API Keys",
+  "subtitle": "Manage API keys for machine-to-machine access to your account.",
+  "buttons": {
+    "new": "New API Key"
+  },
+  "environments": {
+    "live": "Live",
+    "test": "Test"
+  },
+  "statuses": {
+    "active": "Active",
+    "revoked": "Revoked",
+    "expired": "Expired"
+  },
+  "filters": {
+    "environment": "Environment",
+    "status": "Status",
+    "all": "All",
+    "inactive": "Inactive"
+  },
+  "table": {
+    "name": "Name",
+    "keyPrefix": "Key Prefix",
+    "environment": "Environment",
+    "created": "Created",
+    "lastUsed": "Last Used",
+    "expires": "Expires",
+    "status": "Status",
+    "neverUsed": "Never used",
+    "never": "Never"
+  },
+  "form": {
+    "newTitle": "Create API Key",
+    "editTitle": "Edit API Key {{name}}",
+    "name": "Name",
+    "description": "Description",
+    "environment": "Environment",
+    "environmentImmutable": "Environment cannot be changed after creation.",
+    "scopedPermissions": "Scoped Permissions",
+    "scopedPermissionsHint": "Leave empty to inherit all of your permissions.",
+    "ipWhitelist": "IP Whitelist",
+    "ipWhitelistHint": "Enter IP or CIDR (e.g. 203.0.113.10 or 10.0.0.0/24). Leave empty to allow all.",
+    "rateLimit": "Rate Limit",
+    "rateLimitWindow": "Rate Limit Window (seconds)",
+    "expiresAt": "Expires At",
+    "expiresNever": "Never expires",
+    "expiresImmutable": "Expiry cannot be changed after creation.",
+    "keyPrefix": "Key Prefix"
+  },
+  "validation": {
+    "nameRequired": "Name is required.",
+    "nameMax": "Name must be at most 100 characters.",
+    "descriptionMax": "Description must be at most 500 characters.",
+    "rateLimitRange": "Rate limit must be between 1 and 100000.",
+    "rateWindowRange": "Window must be between 60 and 86400 seconds."
+  },
+  "secret": {
+    "title": "API Key Created",
+    "warning": "Save this key securely now — it will not be shown again and cannot be recovered.",
+    "keyLabel": "API key",
+    "copy": "Copy",
+    "done": "Done"
+  },
+  "detail": {
+    "title": "API Key Detail",
+    "totalRequests": "Total Requests",
+    "lastUsedAt": "Last Used At",
+    "lastUsedIp": "Last Used IP",
+    "createdAt": "Created",
+    "inheritsAll": "Inherits all permissions",
+    "allIps": "All IPs allowed"
+  },
+  "rowActions": {
+    "viewDetail": "View Detail",
+    "edit": "Edit",
+    "revoke": "Revoke"
+  },
+  "revoke": {
+    "title": "Revoke API Key",
+    "message": "API key {{name}} will be revoked and can no longer be used.",
+    "confirm": "Revoke"
+  },
+  "list": {
+    "emptyTitle": "No API keys yet",
+    "emptySubtitle": "Click \"New API Key\" to create your first key."
+  },
+  "feedback": {
+    "created": "API key created.",
+    "updated": "API key {{name}} updated.",
+    "revoked": "API key revoked.",
+    "copied": "API key copied to clipboard."
+  },
+  "errors": {
+    "loadData": "Failed to load API keys.",
+    "saveFailed": "Failed to save API key.",
+    "revokeFailed": "Failed to revoke API key."
+  }
+}

@@ -116,6 +116,11 @@ export function AccountDrawer({ compact, sx, ...other }: AccountDrawerProps) {
     router.push(paths.dashboard.account.sessions);
   };
 
+  const handleApiKeys = () => {
+    closeMenu();
+    router.push(paths.dashboard.account.apiKeys);
+  };
+
   const handleLogout = () => {
     closeMenu();
     onOpenLogoutConfirm();
@@ -255,6 +260,10 @@ export function AccountDrawer({ compact, sx, ...other }: AccountDrawerProps) {
         <MenuItem onClick={handleSessions} sx={{ gap: 1 }}>
           <Iconify icon="solar:shield-keyhole-bold-duotone" />
           {t('account.sessions')}
+        </MenuItem>
+        <MenuItem onClick={handleApiKeys} sx={{ gap: 1 }}>
+          <Iconify icon="ic:round-vpn-key" />
+          {t('account.apiKeys')}
         </MenuItem>
 
         {settingsItems.length > 0 && <Divider sx={{ my: 0.5 }} />}

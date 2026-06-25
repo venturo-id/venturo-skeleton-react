@@ -142,6 +142,10 @@ export const endpoints = {
       byCompanies: '/core/v1/branches/by-companies',
       byId: (id: string) => `/core/v1/branches/${id}`,
     },
+    apiKeys: {
+      list: '/core/v1/api-keys',
+      byId: (id: string) => `/core/v1/api-keys/${id}`,
+    },
     roles: {
       list: '/core/v1/roles',
       byId: (id: string) => `/core/v1/roles/${id}`,

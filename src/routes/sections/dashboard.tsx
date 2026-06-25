@@ -29,6 +29,7 @@ const TranslationOverridePage = lazy(
 );
 
 const SessionsPage = lazy(() => import('src/module/core/features/auth/pages/sessions'));
+const ApiKeysPage = lazy(() => import('src/module/core/features/api-keys/pages/list'));
 
 // ----------------------------------------------------------------------
 
@@ -75,6 +76,7 @@ export const dashboardRoutes: RouteObject[] = [
         element: gated(PERM.translationOverrides.read, <TranslationOverridePage />),
       },
       { path: 'account/sessions', element: <SessionsPage /> },
+      { path: 'account/api-keys', element: <ApiKeysPage /> },
     ],
   },
 ];

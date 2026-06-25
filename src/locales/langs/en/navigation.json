@@ -16,6 +16,7 @@
     "profile": "Profile",
     "theme": "Theme",
     "sessions": "Security & Sessions",
+    "apiKeys": "API Keys",
     "logout": "Logout",
     "logoutConfirm": {
       "title": "Logout Confirmation",
