@@ -1,0 +1,99 @@
+{
+  "title": "API Keys",
+  "subtitle": "Kelola API key untuk akses machine-to-machine ke akun Anda.",
+  "buttons": {
+    "new": "API Key Baru"
+  },
+  "environments": {
+    "live": "Live",
+    "test": "Test"
+  },
+  "statuses": {
+    "active": "Aktif",
+    "revoked": "Dicabut",
+    "expired": "Kedaluwarsa"
+  },
+  "filters": {
+    "environment": "Environment",
+    "status": "Status",
+    "all": "Semua",
+    "inactive": "Nonaktif"
+  },
+  "table": {
+    "name": "Nama",
+    "keyPrefix": "Prefix Key",
+    "environment": "Environment",
+    "created": "Dibuat",
+    "lastUsed": "Terakhir Dipakai",
+    "expires": "Kedaluwarsa",
+    "status": "Status",
+    "neverUsed": "Belum pernah dipakai",
+    "never": "Tidak ada"
+  },
+  "form": {
+    "newTitle": "Buat API Key",
+    "editTitle": "Ubah API Key {{name}}",
+    "name": "Nama",
+    "description": "Deskripsi",
+    "environment": "Environment",
+    "environmentImmutable": "Environment tidak bisa diubah setelah dibuat.",
+    "scopedPermissions": "Permission Terbatas",
+    "scopedPermissionsHint": "Kosongkan untuk mewarisi seluruh permission Anda.",
+    "ipWhitelist": "Whitelist IP",
+    "ipWhitelistHint": "Masukkan IP atau CIDR (mis. 203.0.113.10 atau 10.0.0.0/24). Kosongkan untuk izinkan semua.",
+    "rateLimit": "Rate Limit",
+    "rateLimitWindow": "Window Rate Limit (detik)",
+    "expiresAt": "Kedaluwarsa Pada",
+    "expiresNever": "Tidak kedaluwarsa",
+    "expiresImmutable": "Waktu kedaluwarsa tidak bisa diubah setelah dibuat.",
+    "keyPrefix": "Prefix Key"
+  },
+  "validation": {
+    "nameRequired": "Nama wajib diisi.",
+    "nameMax": "Nama maksimal 100 karakter.",
+    "descriptionMax": "Deskripsi maksimal 500 karakter.",
+    "rateLimitRange": "Rate limit harus antara 1 dan 100000.",
+    "rateWindowRange": "Window harus antara 60 dan 86400 detik."
+  },
+  "secret": {
+    "title": "API Key Dibuat",
+    "warning": "Simpan key ini sekarang — tidak akan ditampilkan lagi dan tidak bisa dipulihkan.",
+    "keyLabel": "API key",
+    "copy": "Salin",
+    "done": "Selesai"
+  },
+  "detail": {
+    "title": "Detail API Key",
+    "totalRequests": "Total Request",
+    "lastUsedAt": "Terakhir Dipakai",
+    "lastUsedIp": "IP Terakhir",
+    "createdAt": "Dibuat",
+    "inheritsAll": "Mewarisi semua permission",
+    "allIps": "Semua IP diizinkan"
+  },
+  "rowActions": {
+    "viewDetail": "Lihat Detail",
+    "edit": "Ubah",
+    "revoke": "Cabut"
+  },
+  "revoke": {
+    "title": "Cabut API Key",
+    "message": "API key {{name}} akan dicabut dan tidak bisa dipakai lagi.",
+    "confirm": "Cabut"
+  },
+  "list": {
+    "emptyTitle": "Belum ada API key",
+    "emptySubtitle": "Klik \"API Key Baru\" untuk membuat key pertama Anda."
+  },
+  "feedback": {
+    "created": "API key berhasil dibuat.",
+    "updated": "API key {{name}} diperbarui.",
+    "revoked": "API key dicabut.",
+    "copied": "API key disalin ke clipboard."
+  },
+  "errors": {
+    "loadData": "Gagal memuat API keys.",
+    "saveFailed": "Gagal menyimpan API key.",
+    "revokeFailed": "Gagal mencabut API key."
+  }
+}

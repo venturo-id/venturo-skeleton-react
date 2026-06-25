@@ -25,6 +25,7 @@ export const paths = {
     },
     account: {
       sessions: '/account/sessions',
+      apiKeys: '/account/api-keys',
     },
   },
 };

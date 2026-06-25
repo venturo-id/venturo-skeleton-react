@@ -1,4 +1,5 @@
 import type { Session } from '../types';
+import type { IconifyName } from 'src/shared/ui/iconify/register-icons';
 
 import { useBoolean } from 'minimal-shared/hooks';
 import { useState, useEffect, useCallback } from 'react';
@@ -18,7 +19,6 @@ import { useRouter } from 'src/routes/hooks';
 import { useTranslate } from 'src/locales';
 import { toast } from 'src/shared/ui/snackbar';
 import { Iconify } from 'src/shared/ui/iconify';
-import type { IconifyName } from 'src/shared/ui/iconify/register-icons';
 import { fToNow } from 'src/shared/utils/format-time';
 import { PageHeader } from 'src/shared/ui/page-header';
 import { ErrorDialog } from 'src/shared/ui/error-dialog';

@@ -16,6 +16,7 @@
     "profile": "Profil",
     "theme": "Tema",
     "sessions": "Keamanan & Sesi",
+    "apiKeys": "API Keys",
     "logout": "Keluar",
     "logoutConfirm": {
       "title": "Konfirmasi Keluar",
