@@ -130,29 +130,6 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
     />
   );
 
-  const renderDirection = () => (
-    <BaseOption
-      label={t('options.rightToLeft')}
-      selected={settings.state.direction === 'rtl'}
-      icon={<SvgIcon>{settingIcons.alignRight}</SvgIcon>}
-      onChangeOption={() => {
-        settings.setState({ direction: settings.state.direction === 'ltr' ? 'rtl' : 'ltr' });
-      }}
-    />
-  );
-
-  const renderCompactLayout = () => (
-    <BaseOption
-      tooltip={t('options.compactTooltip')}
-      label={t('options.compact')}
-      selected={!!settings.state.compactLayout}
-      icon={<SvgIcon>{settingIcons.autofitWidth}</SvgIcon>}
-      onChangeOption={() => {
-        settings.setState({ compactLayout: !settings.state.compactLayout });
-      }}
-    />
-  );
-
   const renderPresets = () => (
     <LargeBlock
       title={t('sections.presets')}
@@ -325,8 +302,6 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
           <Box sx={{ gap: 2, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
             {visibility.mode && renderMode()}
             {visibility.contrast && renderContrast()}
-            {visibility.direction && renderDirection()}
-            {visibility.compactLayout && renderCompactLayout()}
           </Box>
 
           {(visibility.navColor || visibility.navLayout) && renderNav()}

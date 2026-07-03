@@ -26,7 +26,7 @@ export const CONFIG: ConfigValue = {
   assetsDir: import.meta.env.VITE_ASSETS_DIR ?? '',
   auth: {
     method: 'jwt',
-    skip: false,
+    skip: true,
     redirectPath: paths.dashboard.root,
   },
   firebase: {

@@ -1,27 +1,33 @@
 {
-  "title": "Beranda",
-  "subtitle": "Selamat datang. Pilih menu dari sidebar untuk mulai.",
-  "greeting": "Selamat datang, {{name}}",
-  "greetingGuest": "Selamat datang",
-  "intro": "Ringkasan singkat dan akses cepat ke dashboard Anda.",
-  "stats": {
-    "revenue": "Pendapatan Bulan Ini",
-    "orders": "Pesanan",
-    "uptime": "Uptime Sistem",
-    "users": "Pengguna Aktif"
+  "title": "Kinerja",
+  "subtitle": "Performance Monitoring",
+  "selectors": {
+    "department": "Departemen",
+    "year": "Tahun",
+    "quarter": "Kuartal"
   },
-  "shortcuts": {
-    "title": "Akses Cepat",
-    "open": "Buka",
-    "finance": "Dashboard Keuangan",
-    "financeDesc": "Pendapatan, biaya, dan arus kas.",
-    "monitoring": "Dashboard Monitoring",
-    "monitoringDesc": "Kesehatan sistem dan trafik.",
-    "sales": "Dashboard Penjualan",
-    "salesDesc": "Performa penjualan dan konversi."
+  "strategicKpi": {
+    "title": "Strategic KPI",
+    "manCount": "Man Count",
+    "clientFeedback": "Client Feedback",
+    "teamKpi": "KPI Team",
+    "projectKpi": "KPI Project"
   },
-  "activity": {
-    "title": "Aktivitas Terbaru",
-    "live": "Live"
+  "team": {
+    "title": "Team",
+    "totalMembers": "Total Members",
+    "excellentPerformers": "Excellent Performers",
+    "needsAttention": "Needs Attention"
+  },
+  "cascadeKpi": {
+    "title": "Cascade KPI",
+    "projectManager": "Project Manager",
+    "techLead": "Tech Lead",
+    "programmer": "Programmer",
+    "table": {
+      "kpi": "KPI",
+      "weight": "BOBOT",
+      "achievement": "ACHIEVEMENT"
+    }
   }
 }
