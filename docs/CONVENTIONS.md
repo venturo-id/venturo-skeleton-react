@@ -10,7 +10,7 @@ Ringkasan aturan main. Detail per topik di [patterns/](patterns/).
 - Axios shared instance (bukan fetch, SWR, React Query)
 - Dayjs untuk date manipulation
 - `yarn` (v1) package manager, Node ≥22
-- **Tidak ada test runner** — jangan bikin `npm test`
+- Vitest + Testing Library (`yarn test`); file `*.test.ts(x)` di samping kodenya — lihat `.claude/rules/tests.md`
 
 ## Module Layout
 
@@ -327,7 +327,6 @@ Field yang cuma BE kirim di List (mis. `created_by_name`, denormalized joins) ti
 - ❌ State `feedback` lokal + `<Alert>` banner — pakai `toast.*` dari `src/shared/ui/snackbar`
 - ❌ `<Alert severity="error">` inline di DialogContent — pakai `<ErrorDialog>` sibling
 - ❌ Mount `<Snackbar />` ulang di layout/feature — sudah global di `app.tsx`
-- ❌ Bikin test file baru (tidak ada test runner)
 - ❌ Pakai React Query / SWR / Redux (stack ini local state + context)
 - ❌ Pakai Tailwind class (proyek pakai MUI `sx`)
 - ❌ Import via relative path `../../`

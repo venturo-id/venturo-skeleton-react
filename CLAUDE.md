@@ -1,151 +1,118 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Arsitektur: `docs/architecture.md`; pola UI per topik: `docs/README.md` (tabel "kapan dibaca");
+kontrak API yang dipakai FE: `docs/api/`. Semua dibaca bila perlu, tidak di-import.
+Aturan per folder (fitur, route, lapisan API, i18n, test, dokumen API) dimuat dari `.claude/rules/`.
 
-## Commands
+## Perintah
 
-Requires Node ≥22. Package manager is `yarn` (v1). Dev server runs on port **8081**.
+```bash
+yarn install        # Node >= 22.12, yarn 1.22.22 (field packageManager); yarn.lock ikut di-commit
+yarn dev            # Vite di port 8081 + overlay TypeScript/ESLint (hanya error)
+yarn build          # tsc lalu vite build
+yarn typecheck      # tsc --noEmit
+yarn test           # vitest run (jsdom); yarn test:watch untuk mode watch
+yarn lint:changed   # ESLint --max-warnings 0 + Prettier, hanya file src/ yang berubah sejak BASE
+yarn lint           # ESLint seluruh src/; ambang Kinerja tampil sebagai warning
+yarn lint:fix       # autofix, termasuk urutan import
+yarn check:all      # lint:changed + typecheck + test + check:changelog + check:doc-sync (sama dengan CI)
+yarn hooks          # sekali per clone: pasang .githooks/commit-msg
+```
 
-- `yarn dev` — start Vite dev server with in-process TS + ESLint checker (overlay top-left)
-- `yarn build` — `tsc --noEmit` then `vite build` (typecheck is part of the build, there is no separate `typecheck` script)
-- `yarn tsc:watch` / `yarn tsc:dev` — watch-mode type checking (pair with dev for tight feedback)
-- `yarn lint` / `yarn lint:fix` — ESLint over `src/**/*.{js,jsx,ts,tsx}`
-- `yarn fm:check` / `yarn fm:fix` — Prettier
-- `yarn fix:all` — lint:fix + fm:fix
-- `yarn re:dev` / `yarn re:build` — clean `node_modules`/`dist`, reinstall, then dev/build
+`BASE` diambil dari argumen atau env `BASE`, lalu `git config kinerja.base`, lalu `origin/HEAD`,
+lalu `origin/production`. Di project turunan set sekali: `git config kinerja.base origin/<branch-tujuan>`.
+Setup lokal: `docs/guides/local-development.md`; fitur baru: `docs/guides/new-feature.md`.
 
-There is **no test runner configured** — don't invent test commands.
+## Konvensi yang berbeda dari kebiasaan
 
-## Environment
+- Import selalu `src/...` (alias Vite + `baseUrl`), bukan relatif `../../`. Urutan import dipaksa
+  `perfectionist/sort-imports` (error) dengan grup kustom: jalankan `yarn lint:fix`, jangan disusun manual.
+- Import yang hanya tipe memakai `import type`.
+- HTTP ke backend hanya lewat instance `src/shared/lib/axios.ts` (header Bearer + refresh saat 401);
+  URL endpoint hanya di `endpoints.*` di file yang sama.
+- Error dari instance itu sudah berupa `Error` (+ `.status`) dengan pesan dari `errors`/`message`
+  backend: di `catch` cukup baca `err.message`.
+- State lokal + React Context; tanpa Redux, SWR, atau React Query. Styling MUI `sx`, tanpa Tailwind.
+- Teks yang dilihat user selalu lewat `t()` (`useTranslate('<namespace>')`), termasuk pesan Zod.
 
-Config is read in [src/shared/config/index.ts](src/shared/config/index.ts):
+## Gotcha
 
-- `VITE_SERVER_URL` — backend base URL used by the shared axios instance
-- `VITE_ASSETS_DIR` — assets base
+- `docs/CONVENTIONS.md` dan `docs/patterns/*` memakai contoh `src/module/finance/**` (fund-transfer,
+  cash-transactions, contacts, approval) yang tidak ada di skeleton ini. Polanya tetap berlaku; contoh
+  kode yang ada: `src/module/core/features/branches/` (CRUD dialog + cache reference data).
+- Env `VITE_*` di-inline Vite saat build dan terbaca di bundle browser; image Docker memakai `.env.prod`
+  (`COPY .env.prod .env`). Mengubah env berarti build ulang.
+- Access token di `sessionStorage` (per tab), refresh token di `localStorage`: tab baru selalu
+  refresh token dulu sebelum `GET /core/v1/auth/me`.
+- `CONFIG.auth.skip = true` (`src/shared/config/index.ts`) mematikan `AuthGuard` dashboard untuk dev
+  tanpa backend; jangan di-commit dalam keadaan `true`.
+- Nama icon Iconify hanya yang terdaftar di `src/shared/ui/iconify/icon-sets.ts`; nama lain gagal `tsc`.
+- Ambang Kinerja di `eslint.config.mjs` berlevel `warn`, jadi `yarn lint` lulus dengan backlog lama.
+  `yarn lint:changed` dan CI gagal pada warning apa pun di file yang berubah: mengubah file lama berarti
+  membereskan pelanggaran lama di file itu juga.
+- `max-lines-per-function` dan `complexity` melapor di baris awal fungsi; panjang dihitung termasuk
+  baris kosong dan komentar, sama dengan reviewer Kinerja.
 
-`CONFIG.auth.skip = true` bypasses `AuthGuard` on dashboard routes ([src/routes/sections/dashboard.tsx](src/routes/sections/dashboard.tsx)) — useful when backend is unavailable.
+## Larangan keras
 
-## Architecture
+- Tidak ada secret di env `VITE_*` atau file yang di-commit: semua `VITE_*` ikut ke bundle browser.
+- Token, password, dan data personal tidak pernah di-log. Tidak ada `console.log` di kode yang
+  di-commit (`no-console`; `console.warn`/`console.error` boleh).
+- Tidak membuat instance axios kedua atau memanggil backend dengan `fetch`: request itu lolos dari
+  header auth dan refresh token.
+- Tidak ada `any` (pakai `unknown` lalu narrow) dan tidak ada `dangerouslySetInnerHTML` tanpa sanitasi.
+- Fitur mengambil data dari endpoint backend; `src/_mock` sisa starter dan tidak diimpor kode baru.
+- `eslint-disable` wajib menyebut rule dan alasannya
+  (`// eslint-disable-next-line react-hooks/exhaustive-deps -- hanya saat mount`).
+- Tidak push ke branch PR setelah PR di-approve (dihitung pelanggaran, tidak direview).
 
-This is the **Minimals MUI starter (v7.6.1)** adapted into a multi-tenant finance product ("Tuai"). Stack: Vite 7 + React 19 + React Router 7 (data router) + MUI v7 + Emotion + React Hook Form/Zod + Axios. No Redux / no SWR / no React Query — state is local + context.
+## Standar review Kinerja
 
-### Path alias
+PR dinilai otomatis di kinerja.venturo.id; `yarn check:all`, hook, dan CI menegakkan sebagian besar.
 
-Imports under `src/...` resolve via both the Vite alias ([vite.config.ts](vite.config.ts)) and TS `baseUrl: "."` ([tsconfig.json](tsconfig.json)). Always import with `src/...`, not relative `../../../`.
+- Struktur (−10 per temuan): fungsi ≤50 baris dari signature sampai `}` termasuk baris kosong dan
+  komentar (komponen fungsi React ikut dihitung); kompleksitas ≤10; nesting ≤4; parameter ≤5 (satu objek
+  props = 1); file ≤800 baris, file `.tsx`/`.jsx` ≤300; tanpa duplikasi; tanpa magic value di logika
+  (literal di test, `src/theme`, `src/_mock`, dan config dikecualikan); tanpa kode mati.
+- Aturan stack React yang paling sering kena: komponen >200 baris dipecah; dependency `useEffect`
+  lengkap dan langganan/timer di-cleanup; tidak mendefinisikan komponen di dalam komponen; `key` list
+  dinamis bukan index; logika bisnis di hook atau `api/`, bukan di komponen.
+- Doc sync (10 poin, biner): perubahan `src/**/api/**`, `src/**/services/**`, atau `endpoints` di
+  `src/shared/lib/axios.ts` membawa `docs/api/` di PR yang sama (`yarn check:doc-sync`). Setiap
+  perubahan kode aplikasi = entri di `CHANGELOG.md` bagian `## [Unreleased]` (`yarn check:changelog`).
+- Custom hook dan util yang diubah punya unit test; alur auth, form, dan pembayaran punya integration
+  test yang menguji interaksi user (Testing Library).
+- Commit: subject `type(scope)?!?: deskripsi` (type `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test`)
+  dan kode issue Space `[KODE-123]` di setiap commit; tanpa itu PR tidak dinilai.
+- Deskripsi PR ditulis sebelum push pertama (mengedit deskripsi tidak memicu review ulang) dan hanya
+  berisi fakta yang ada di diff.
 
-### Module layout
+## Delegasi sub-agent
 
-Code is split into **domain modules** under [src/module/](src/module/):
+Batas umum: sub-agent tidak commit, push, atau membuat PR; hasilnya diperiksa agent utama.
 
-- [module/core/](src/module/core/) — cross-cutting: `auth`, `settings`, `error`
-- [module/finance/](src/module/finance/) — business domain (currently `dashboard` scaffold only)
-
-Each `features/<feature>/` folder follows a consistent shape: `api/`, `components/`, `context/`, `guard/`, `hooks/`, `pages/`, `types/`, `views/`. `pages/` are the lazy-loaded route leaves; `views/` hold the page body component so pages stay thin. Stick to this layout when adding features.
-
-Everything else lives in [src/shared/](src/shared/) (`api`, `config`, `constants`, `hooks`, `lib`, `types`, `ui`, `utils`), [src/layouts/](src/layouts/), [src/routes/](src/routes/), [src/theme/](src/theme/).
-
-### Routing
-
-- Entry: [src/main.tsx](src/main.tsx) builds a `createBrowserRouter` with `routesSection` from [src/routes/sections/index.tsx](src/routes/sections/index.tsx), wrapped in `<App>`. `ErrorBoundary` is set as `errorElement`.
-- Sections: [routes/sections/auth.tsx](src/routes/sections/auth.tsx), [routes/sections/dashboard.tsx](src/routes/sections/dashboard.tsx). Pages are `lazy(() => import(...))` and rendered inside a `<Suspense>` keyed by `pathname` so route transitions re-trigger the fallback.
-- Paths are centralized in [src/routes/paths.ts](src/routes/paths.ts) — add new routes there and reference via `paths.*` rather than string literals.
-- Root `/` redirects to `CONFIG.auth.redirectPath` (dashboard).
-
-### App shell
-
-[src/app.tsx](src/app.tsx) wires providers in this order: `I18nProvider → AuthProvider → SettingsProvider → ThemeProvider → LocalizationProvider → MotionLazy`, plus global `<ProgressBar>`, `<SettingsDrawer>`, `<OnboardingDialog>`. New global overlays/providers belong here.
-
-### Internationalization (i18n)
-
-[src/locales/](src/locales/) runs i18next + react-i18next + lazy JSON loader. Default language is **Bahasa Indonesia**, secondary is **English**, persisted via `localStorage.i18nextLng`. Language switcher in header (`<LanguagePopover data={allLangs} />`) is live. `LocalizationProvider` syncs dayjs locale to current language automatically.
-
-- **Never hardcode user-facing strings** — use `useTranslate('<namespace>')` in components, `i18n.t()` directly in hooks
-- **Namespace per feature** — `src/locales/langs/{id,en}/<feature>.json`; shared strings (Batal, Hapus, Baris per halaman) go in `common.json`
-- **Zod messages** — use `makeSchema(t)` factory wrapped in `useMemo`
-- See [docs/patterns/i18n.md](docs/patterns/i18n.md)
-
-### Auth (JWT + multi-company)
-
-[src/module/core/features/auth/context/jwt/auth-provider.tsx](src/module/core/features/auth/context/jwt/auth-provider.tsx) is the single source of truth:
-
-- Access token stored in `sessionStorage` as `tuai.access_token`; refresh token in `localStorage` as `tuai.refresh_token` (keys in [constant.ts](src/module/core/features/auth/context/jwt/constant.ts)).
-- On mount, `checkUserSession` reads tokens, refreshes if expired (client-side `exp` check via base64-decoded JWT payload, no external lib), then hydrates via `GET /core/v1/auth/me`.
-- Auth state includes `user`, `company`, `client`, `roles`, `permissions`, `isSuperAdmin` — **multi-company is a first-class concept**. `switchCompany(companyId)` hits the backend, which returns a new token pair scoped to that company plus updated roles/permissions.
-- Backend endpoints are listed in [src/shared/lib/axios.ts](src/shared/lib/axios.ts) under `endpoints.auth.*`. API base path is `/core/v1/auth/*`.
-- API calls use the `ApiEnvelope<T> = { data, message, meta, errors }` shape, unwrapped by `unwrap<T>()` in [auth/api/index.ts](src/module/core/features/auth/api/index.ts) — reuse this helper pattern when adding endpoints that follow the same envelope.
-
-### Shared axios
-
-[src/shared/lib/axios.ts](src/shared/lib/axios.ts) exports a single instance with:
-
-- Request interceptor that attaches `Authorization: Bearer <access>`.
-- Response interceptor that, on `401`, calls a registered `refreshHandler` once (deduped via a shared `refreshPromise`) and retries the original request. Failed refresh fires `onUnauthorized` → `AuthProvider` clears tokens.
-- `configureAxiosAuth(...)` is called **once** from `AuthProvider` to wire the token getters and refresh handler — don't instantiate another axios client; extend this one.
-- `withoutAuthRefresh(config)` sets `_skipAuthRefresh: true` — use this for the refresh call itself or any request that must not trigger the refresh loop.
-- Errors are normalized to a plain `Error` with `.status` and a message extracted from `response.data.errors || response.data.message`. Catch blocks should read `err.message` directly.
-- `fetcher(url | [url, config])` is a `GET`-and-unwrap helper (suitable for SWR-style hooks if added later).
-
-### Guards
-
-Three composable guards in [src/module/core/features/auth/guard/](src/module/core/features/auth/guard/):
-
-- `AuthGuard` — redirects unauthenticated users to sign-in (wraps dashboard routes)
-- `GuestGuard` — redirects authenticated users away from auth pages
-- `PermissionGuard` — declarative permission check driven by [use-permission.ts](src/module/core/features/auth/hooks/use-permission.ts) (`can`, `canAll`, `canAny`, with `isSuperAdmin` bypass). Accepts `require: string | string[]`, `mode: 'all' | 'any'`, optional `fallback` and `showForbidden`.
-
-For permission-gating UI elements, prefer `PermissionGuard` or `usePermission()` over bespoke checks.
-
-### Layouts
-
-[src/layouts/](src/layouts/): `auth-split` (sign-in/up), `dashboard` (main app shell with nav), `simple`. Routes compose as `<Guard><Layout><SuspenseOutlet /></Layout></Guard>` — follow this pattern for new route trees.
-
-## Standards & Patterns
-
-Proyek ini punya standarisasi terdokumentasi di [docs/](docs/). **Baca ini sebelum bikin feature baru atau mengubah pattern yang sudah ada.**
-
-- **[docs/CONVENTIONS.md](docs/CONVENTIONS.md)** — ringkasan aturan main (always relevant)
-- **[docs/patterns/](docs/patterns/)** — deep dive per topik (load saat relevan):
-  - `feature-module.md` — cara scaffold feature baru
-  - `table.md` — shared table toolkit (`useTable`, `TableHeadCustom`, `TableSkeleton`, `TablePaginationCustom`) + `defaultDense: true` baseline
-  - `dialog-crud.md` — UX dialog create/edit/view (local state, transitions, action buttons standar)
-  - `multiline-form.md` — multi-line entity (cash-book style): table + nested line dialog, pin, counter filter, dual currency
-  - `api-layer.md` — `unwrap<T>()`, `unwrapList<T>()`, endpoints, multipart variants
-  - `form-fields.md` — `Field.*`, `RHFNumericField`, Zod schema (`.nullish()` untuk optional BE fields)
-  - `date-range-picker.md` — `<DateRangePicker />` shared component (popover + presets + range visualization free)
-  - `attachments.md` — `AttachmentGrid`, `useAttachments` / `useLineAttachments`, icon UX
-  - `approval-audit.md` — integration dengan core/approval & core/audit-log
-  - `reference-data.md` — cached hooks, `useBranchVisibility` wrapper, company-scoped invalidation (cache-registry + `companyVersion`)
-  - `i18n.md` — `useTranslate`, language popover, namespace per feature (id default + en)
-  - `reports.md` — read-only report pages (filter bar, shared table, JWT-protected print/export via axios blob — **jangan** `window.open(fullUrl)`)
-
-### Canonical references
-
-- **Single-entity + flat attachments**: [src/module/finance/features/fund-transfer/](src/module/finance/features/fund-transfer/)
-- **Multi-line entity + per-line attachments**: [src/module/finance/features/cash-transactions/](src/module/finance/features/cash-transactions/)
-
-Saat ragu:
-1. Baca implementasi di referensi yang paling mendekati kebutuhan
-2. Ikuti pola yang sama untuk feature baru
-3. Kalau perlu menyimpang, update docs/ untuk catat alasannya
-
-### Key non-obvious decisions
-
-- **Dialog-based CRUD (bukan page)** — untuk small/medium entity, UX lebih cepat karena user tidak kehilangan list context
-- **Local state dialog (bukan URL sync)** — `useSearchParams` memicu full list re-render, bikin dialog feel lambat
-- **Fast dialog transition** — `transitionDuration={{ enter: shortest, exit: shortest - 80 }}` (default MUI 225/195ms terasa lambat)
-- **Dialog tanpa tombol "Batal"** — X di title cukup
-- **Module-level cache untuk reference data** — hindari N+1 fetch di table row
-- **Tidak ada mock data di feature** — selalu real BE endpoint via cached hook
-- **`RHFNumericField` untuk amount/currency** — `Field.Text type="number"` tidak format thousand separator
-- **Multilanguage wajib** — semua label via `t()`, tidak ada string hardcoded; fund-transfer sebagai contoh lengkap
-
-## Conventions enforced by ESLint
-
-[eslint.config.mjs](eslint.config.mjs) scopes linting to `src/` only and is **strict about import ordering** (`perfectionist/sort-imports` is error-level):
-
-- Imports are grouped and sorted by line length in a custom order: side-effects → types → builtin/external → MUI → routes → hooks → utils → internal → components → sections → auth → local → parent/sibling/index.
-- Internal pattern is `^src/.+`.
-- Use `import type` for type-only imports (`@typescript-eslint/consistent-type-imports`).
-- Run `yarn lint:fix` after edits rather than hand-sorting — there are many groups and the ordering isn't obvious.
-
-Other notable rules: `no-bitwise` (error), `consistent-return` (error), `default-case` with `no default` escape comment, `react/self-closing-comp` (error), `react/jsx-curly-brace-presence: never`.
+1. **Eksplorasi sebelum mengubah kode** — agent `Explore`
+   - Pemicu: akan mengubah hook, util, komponen bersama, tipe, atau fungsi `api/` yang dipakai di luar file itu.
+   - Input: path file + nama simbol yang akan diubah; scope `src/`, `docs/api/`.
+   - Output: daftar `path:line` pemakai, test yang menutupinya, dan dokumen API terkait — satu baris per item, maks 30 baris.
+   - Batas: read-only; maks 4 paralel (satu per file atau fitur).
+2. **Rencana perubahan besar** — agent `Plan`
+   - Pemicu: perubahan menyentuh lebih dari 3 file, lebih dari satu fitur, atau alur auth/token/permission.
+   - Input: tujuan issue Space, hasil eksplorasi, file `.claude/rules/` yang berlaku.
+   - Output: langkah bernomor; tiap langkah menyebut file, test yang ditambah, dan dokumen yang diupdate.
+   - Batas: read-only; 1 agent.
+3. **Verifikasi calon temuan** — agent `general-purpose`
+   - Pemicu: ada temuan dari review, lint, atau agent lain yang belum terbukti.
+   - Input: satu temuan (kategori, `path:line`, klaim); scope file itu dan pemakainya.
+   - Output: `CONFIRMED` / `REJECTED` + bukti `path:line` + alasan maks 2 kalimat.
+   - Batas: read-only (boleh menjalankan `yarn test` dan `yarn lint:changed`); maks 3 paralel.
+4. **Review diff sebelum PR** — agent `general-purpose`
+   - Pemicu: sebelum push pertama atau sebelum membuka PR.
+   - Input: output `git diff <BASE>...HEAD`, bagian "Standar review Kinerja" di atas, dan rules yang berlaku untuk file di diff.
+   - Output: daftar `[severity] kategori path:line — ringkasan` maks 15 butir, atau `bersih`.
+   - Batas: read-only; 1 agent.
+5. **Sinkron dokumen setelah API berubah** — agent `general-purpose`
+   - Pemicu: `yarn check:doc-sync` atau `yarn check:changelog` gagal.
+   - Input: diff `src/**/api/**` dan `src/shared/lib/axios.ts`; scope hanya `docs/api/` dan `CHANGELOG.md`.
+   - Output: daftar file dokumen yang diubah + satu kalimat per file.
+   - Batas: boleh edit hanya file di scope itu; 1 agent.
