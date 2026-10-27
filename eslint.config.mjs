@@ -3,6 +3,7 @@ import eslintJs from '@eslint/js';
 import eslintTs from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import importPlugin from 'eslint-plugin-import';
+import sonarjsPlugin from 'eslint-plugin-sonarjs';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import perfectionistPlugin from 'eslint-plugin-perfectionist';
 import unusedImportsPlugin from 'eslint-plugin-unused-imports';
@@ -43,7 +44,7 @@ const commonRules = () => ({
   'react-hooks/preserve-manual-memoization': 0,
   // typescript
   '@typescript-eslint/no-shadow': 2,
-  '@typescript-eslint/no-explicit-any': 0,
+  '@typescript-eslint/no-explicit-any': 1,
   '@typescript-eslint/no-empty-object-type': 0,
   '@typescript-eslint/consistent-type-imports': 1,
   '@typescript-eslint/no-unused-vars': [1, { args: 'none' }],
@@ -159,6 +160,40 @@ const sortImportsRules = () => {
 };
 
 /**
+ * @rules thresholds
+ * Ambang review Kinerja (kinerja.venturo.id). Level `warn` supaya `yarn lint` tidak
+ * gagal karena pelanggaran lama; `yarn lint:changed` menjalankan ESLint dengan
+ * `--max-warnings 0` pada file yang berubah, jadi di sana ambang ini berlaku
+ * sebagai error.
+ */
+const thresholdRules = () => ({
+  'max-lines-per-function': [
+    1,
+    { max: 50, skipBlankLines: false, skipComments: false, IIFEs: true },
+  ],
+  complexity: [1, 10],
+  'max-depth': [1, 4],
+  'max-params': [1, 5],
+  'max-lines': [1, { max: 800, skipBlankLines: false, skipComments: false }],
+  'no-magic-numbers': 0,
+  '@typescript-eslint/no-magic-numbers': [
+    1,
+    {
+      ignore: [-1, 0, 1, 2],
+      ignoreArrayIndexes: true,
+      ignoreDefaultValues: true,
+      ignoreEnums: true,
+      ignoreNumericLiteralTypes: true,
+      ignoreTypeIndexes: true,
+      ignoreReadonlyClassProperties: true,
+    },
+  ],
+  'sonarjs/no-identical-functions': 1,
+  'sonarjs/no-duplicate-string': [1, { threshold: 3 }],
+  'no-console': [1, { allow: ['warn', 'error'] }],
+});
+
+/**
  * Custom ESLint configuration.
  */
 export const customConfig = {
@@ -166,6 +201,7 @@ export const customConfig = {
     'react-hooks': reactHooksPlugin,
     'unused-imports': unusedImportsPlugin,
     perfectionist: perfectionistPlugin,
+    sonarjs: sonarjsPlugin,
     import: importPlugin,
   },
   settings: {
@@ -183,8 +219,25 @@ export const customConfig = {
     ...importRules(),
     ...unusedImportsRules(),
     ...sortImportsRules(),
+    ...thresholdRules(),
   },
 };
+
+/**
+ * Komponen UI (.tsx/.jsx) dinilai Kinerja sebagai `ui_component_length` (300 baris).
+ * Literal di test, data mock, dan konfigurasi (termasuk token tema) tidak dihitung
+ * sebagai magic value.
+ */
+const overrideConfigs = [
+  {
+    files: ['**/*.{tsx,jsx}'],
+    rules: { 'max-lines': [1, { max: 300, skipBlankLines: false, skipComments: false }] },
+  },
+  {
+    files: ['**/*.test.{ts,tsx}', 'src/test/**', 'src/_mock/**', 'src/theme/**', '**/*.config.*'],
+    rules: { '@typescript-eslint/no-magic-numbers': 0, 'sonarjs/no-duplicate-string': 0 },
+  },
+];
 
 // ----------------------------------------------------------------------
 
@@ -201,4 +254,5 @@ export default [
   ...eslintTs.configs.recommended,
   reactPlugin.configs.flat.recommended,
   customConfig,
+  ...overrideConfigs,
 ];

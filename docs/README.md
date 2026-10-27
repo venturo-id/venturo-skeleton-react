@@ -25,4 +25,6 @@ Baca yang relevan dengan pekerjaan saat ini:
 
 ## Canonical reference
 
-Semua pattern ini diimplementasi di `src/module/finance/features/fund-transfer/`. Saat ragu, baca kode di sana sebagai "referensi hidup" — ikuti pola yang sama untuk feature baru.
+Contoh di dokumen pattern merujuk `src/module/finance/features/*` (fund-transfer, cash-transactions, contacts) yang tidak ikut di skeleton ini. Referensi hidup yang ada: `src/module/core/features/branches/` (CRUD dialog, tabel, cache reference data) — ikuti pola yang sama untuk feature baru.
+
+Kontrak endpoint yang dipanggil FE: [api/README.md](api/README.md). Arsitektur: [architecture.md](architecture.md).

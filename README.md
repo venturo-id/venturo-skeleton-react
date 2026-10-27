@@ -26,25 +26,36 @@ Backend default mengarah ke `VITE_SERVER_URL`. Untuk dev lokal, arahkan ke backe
 
 ```sh
 yarn install
+yarn hooks          # sekali per clone: hook commit-msg (format commit review Kinerja)
+git config kinerja.base origin/production   # branch tujuan PR, dipakai lint:changed & cek PR
 yarn dev            # Vite dev server di http://localhost:8081
 ```
+
+Detail setup: [docs/guides/local-development.md](docs/guides/local-development.md).
 
 Dev server jalan di **port 8081** (lihat [vite.config.ts](vite.config.ts)) dan menampilkan overlay TypeScript + ESLint checker di pojok kiri-atas.
 
 ## Skrip yang tersedia
 
-| Skrip                             | Fungsi                                                                                                         |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `yarn dev`                        | Start Vite dev server (in-process TS + ESLint checker)                                                         |
-| `yarn build`                      | `tsc` (typecheck) lalu `vite build` — typecheck adalah bagian dari build, tidak ada skrip `typecheck` terpisah |
-| `yarn start`                      | `vite preview` atas hasil build                                                                                |
-| `yarn tsc:watch` / `yarn tsc:dev` | Type-check watch mode (pasangkan dengan dev)                                                                   |
-| `yarn lint` / `yarn lint:fix`     | ESLint atas `src/**/*.{js,jsx,ts,tsx}`                                                                         |
-| `yarn fm:check` / `yarn fm:fix`   | Prettier check / write                                                                                         |
-| `yarn fix:all`                    | `lint:fix` + `fm:fix`                                                                                          |
-| `yarn re:dev` / `yarn re:build`   | Bersihkan `node_modules`/`dist`, reinstall, lalu dev/build                                                     |
+| Skrip                             | Fungsi                                                                                                     |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `yarn dev`                        | Start Vite dev server (in-process TS + ESLint checker)                                                     |
+| `yarn build`                      | `tsc` (typecheck) lalu `vite build`                                                                        |
+| `yarn start`                      | `vite preview` atas hasil build                                                                            |
+| `yarn typecheck`                  | `tsc --noEmit`                                                                                             |
+| `yarn tsc:watch` / `yarn tsc:dev` | Type-check watch mode (pasangkan dengan dev)                                                               |
+| `yarn test` / `yarn test:watch`   | Vitest + Testing Library (jsdom), sekali jalan / watch                                                     |
+| `yarn lint:changed [BASE]`        | ESLint `--max-warnings 0` + Prettier hanya pada file `src/` yang berubah sejak `BASE` — yang dijalankan CI |
+| `yarn lint` / `yarn lint:fix`     | ESLint atas `src/**/*.{js,jsx,ts,tsx}`; ambang review Kinerja tampil sebagai warning                       |
+| `yarn fm:check` / `yarn fm:fix`   | Prettier check / write                                                                                     |
+| `yarn fix:all`                    | `lint:fix` + `fm:fix`                                                                                      |
+| `yarn check:changelog [BASE]`     | Gagal kalau kode aplikasi berubah tanpa entri di [CHANGELOG.md](CHANGELOG.md)                              |
+| `yarn check:doc-sync [BASE]`      | Gagal kalau `api/`, `services/`, atau `endpoints` berubah tanpa update [docs/api/](docs/api/README.md)     |
+| `yarn check:all`                  | `lint:changed` + `typecheck` + `test` + `check:changelog` + `check:doc-sync` (sama dengan CI)              |
+| `yarn hooks`                      | Pasang `.githooks/commit-msg`: subject Conventional Commit + kode issue Space `[KODE-123]`                 |
+| `yarn re:dev` / `yarn re:build`   | Bersihkan `node_modules`/`dist`, reinstall, lalu dev/build                                                 |
 
-> Tidak ada test runner yang dikonfigurasi di proyek ini.
+`BASE` default: `git config kinerja.base`, lalu `origin/HEAD`, lalu `origin/production`.
 
 ---
 
@@ -173,7 +184,7 @@ Tiga guard composable di [auth/guard/](src/module/core/features/auth/guard/): `A
 
 ### Internationalization (i18n)
 
-i18next + react-i18next, JSON lazy-loaded dari [src/locales/langs/{id,en}/](src/locales/langs/). Default **Bahasa Indonesia**, sekunder **English**, persist via `localStorage.i18nextLng`. **Jangan hardcode string** — pakai `useTranslate('<namespace>')`; satu namespace JSON per fitur.
+i18next + react-i18next, JSON lazy-loaded dari [src/locales/langs/{id,en}/](src/locales/langs/). Bahasa `en` (fallback) dan `id`, pilihan user persist via `localStorage.i18nextLng`. **Jangan hardcode string** — pakai `useTranslate('<namespace>')`; satu namespace JSON per fitur.
 
 ---
 
@@ -183,6 +194,11 @@ Sebelum membuat fitur baru atau mengubah pola, baca [docs/](docs/):
 
 - [docs/CONVENTIONS.md](docs/CONVENTIONS.md) — ringkasan aturan main
 - [docs/patterns/](docs/patterns/) — deep-dive: `feature-module`, `table`, `dialog-crud`, `multiline-form`, `api-layer`, `form-fields`, `date-range-picker`, `attachments`, `approval-audit`, `reference-data`, `i18n`, `reports`
+- [docs/architecture.md](docs/architecture.md) — arsitektur (routing, auth, axios, i18n, lint & test)
+- [docs/api/](docs/api/README.md) — endpoint backend yang dipanggil FE, per fitur
+- [docs/guides/](docs/guides/) — development lokal dan cara menambah fitur
+- [CLAUDE.md](CLAUDE.md) + [.claude/rules/](.claude/rules/) — perintah, konvensi, standar review Kinerja, dan delegasi sub-agent untuk Claude Code
+- [CHANGELOG.md](CHANGELOG.md) — perubahan per rilis
 
 Konvensi ESLint penting ([eslint.config.mjs](eslint.config.mjs)): import ordering strict (`perfectionist/sort-imports`), `import type` untuk type-only. Jalankan `yarn lint:fix` setelah edit, jangan sortir manual.
 
