@@ -35,6 +35,12 @@ menambah entri di `## [Unreleased]` (dicek `yarn check:changelog`).
   `.claude/rules/` per folder (fitur, route, lapisan API, i18n, test, dokumen API).
 - `.claude/settings.json` dengan marketplace plugin `venturo-tools` serta plugin `venturo-kinerja`
   dan mod `venturo-kinerja-hud`, dan `.claude/venturo-kinerja.json` (`"mode": "enforce"`).
+- `useAsyncAction()` (`src/shared/hooks/use-async-action.ts`): state `pending` untuk tombol/field
+  yang memicu request; `run()` mengabaikan klik kedua selama request masih jalan.
+- `<SavingAdornment />` (`src/shared/ui/saving-adornment`): spinner `endAdornment` untuk field
+  auto-save (on blur / on change).
+- Aturan "Loading state aksi async — wajib" di `docs/CONVENTIONS.md` dan
+  `docs/patterns/dialog-crud.md`.
 
 ### Changed
 
@@ -45,3 +51,5 @@ menambah entri di `## [Unreleased]` (dicek `yarn check:changelog`).
   `docs/guides/`, aturan per folder ke `.claude/rules/`.
 - `docs/CONVENTIONS.md` dan `docs/README.md`: larangan membuat test dihapus, rujukan contoh kode ke
   fitur `branches` yang ada di skeleton.
+- `ConfirmDialog` menunggu sendiri bila `onConfirm` me-return promise: tombol konfirmasi spinner,
+  Cancel/X/backdrop terkunci sampai selesai. Prop `loading` tetap didukung.

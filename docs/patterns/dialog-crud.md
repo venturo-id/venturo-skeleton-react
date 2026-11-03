@@ -366,6 +366,44 @@ Reusable untuk submit/approve/reject/delete tanpa buka detail:
 
 Action config per tipe (submit/approve/reject/delete) biasanya di-ekstrak ke helper `getActionConfig(action, t)` yang return object `{title, confirmLabel, commentLabel, commentPlaceholder, ...}` — semua sudah translated. Lihat [fund-transfer-detail-dialog.tsx](../../src/module/finance/features/fund-transfer/components/fund-transfer-detail-dialog.tsx).
 
+Shared `ConfirmDialog` (`src/shared/ui/confirm-dialog`) **menunggu sendiri** kalau `onConfirm` me-return promise: tombol konfirmasi spinner, Cancel/X/backdrop terkunci sampai selesai. Cukup `onConfirm={remove}` dengan `remove` async — prop `loading` hanya perlu kalau proses berjalan di luar `onConfirm`.
+
+## Loading state aksi async (wajib)
+
+Setiap tombol / field yang memicu request **wajib** menunjukkan request sedang jalan. Tanpa itu dialog terlihat "stuck" (request + refresh bisa 1–2 detik) dan double-click mengirim request dua kali.
+
+Pakai `useAsyncAction()` dari `src/shared/hooks/use-async-action` — `pending` untuk UI, `run()` mengabaikan klik kedua selama masih pending.
+
+**Form dialog RHF** yang menyimpan sendiri lewat `handleSubmit` (pola [item-form-dialog.tsx](../../src/module/core/features/demo/components/item-form-dialog.tsx)) sudah memenuhi aturan ini dengan `submitting = useBoolean()` — `onClose={submitting.value ? undefined : onClose}`, X `disabled`, tombol submit `loading={submitting.value}`. Tidak perlu diganti.
+
+**Form dialog yang mendelegasikan save ke parent** — `onSave` boleh me-return promise; dialog yang memegang state loading-nya:
+
+```tsx
+type Props = {
+  onSave: (value: Value) => Promise<void> | void; // parent: async, refresh + feedback di dalamnya
+};
+
+const saving = useAsyncAction();
+const submit = () => {
+  setTouched(true);
+  if (error) return;
+  saving.run(() => onSave(value));
+};
+
+<MotionDialog open={open} onClose={saving.pending ? undefined : onClose}>
+  <IconButton onClick={onClose} disabled={saving.pending}>…</IconButton>
+  …
+  <Button variant="contained" loading={saving.pending} onClick={submit}>
+```
+
+**Tombol aksi inline** (submit, approve, export, kirim ulang): satu `useAsyncAction` per tombol → `loading={x.pending}`.
+
+**Field auto-save** (simpan on blur / on change — select, switch, text): field `disabled={x.pending}` + `<SavingAdornment pending={x.pending} />` (`src/shared/ui/saving-adornment`) sebagai `endAdornment`; prop `select` untuk `TextField select` supaya tidak menimpa panah dropdown. Switch: `CircularProgress size={14}` di label. Satu action per field — hanya field yang sedang disimpan yang terkunci. Panggil `run` **setelah** cek "tidak berubah", supaya field tidak berkedip disabled di setiap blur.
+
+Error tetap ditangani di dalam action — `<ErrorDialog>` untuk error save/delete, `toast.error` hanya untuk error ringan ([feedback.md](feedback.md)). `run` tidak menelan error.
+
+Referensi: [confirm-dialog.tsx](../../src/shared/ui/confirm-dialog/confirm-dialog.tsx) (async `onConfirm`), [use-async-action.ts](../../src/shared/hooks/use-async-action.ts), [saving-adornment.tsx](../../src/shared/ui/saving-adornment/saving-adornment.tsx).
+
 ## Jangan lupa
 
 - **After save**: `onSaved(entity)` — parent biasanya auto-open view dialog + refresh list

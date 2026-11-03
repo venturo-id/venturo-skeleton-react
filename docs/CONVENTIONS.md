@@ -113,6 +113,10 @@ Semua list view **wajib pakai shared toolkit** `src/shared/ui/table/` — bukan 
 - `Field.DatePicker` dengan `format="DD MMM YYYY"` — consistent dengan dayjs locale id
 - Zod schema di atas component, export type via `z.infer<typeof Schema>`
 
+### Loading state aksi async — wajib
+
+Tombol / field yang memicu request (save, delete, toggle, auto-save on blur) **wajib** spinner selama request jalan, dan dialog tidak bisa ditutup di tengah save. Pakai `useAsyncAction()` (`src/shared/hooks/use-async-action`) → `loading={x.pending}`; field auto-save pakai `<SavingAdornment />`. `ConfirmDialog` sudah otomatis kalau `onConfirm` async. Detail di [patterns/dialog-crud.md § Loading state aksi async](patterns/dialog-crud.md#loading-state-aksi-async-wajib).
+
 ### Save button label — selalu "Simpan" / "Save" (master data / non-workflow form)
 
 Tombol save di form dialog **master data** (users, roles, branches, contacts, chart-of-accounts, dll — entity tanpa status workflow) **wajib** pakai label `tCommon('actions.save')` = "Simpan" / "Save" **baik di mode create maupun edit**. Tidak ada lagi "Buat" / "Create" untuk mode create.
